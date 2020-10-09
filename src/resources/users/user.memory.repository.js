@@ -1,6 +1,22 @@
-const getAll = async () => {
+const DB = require('../../utils/inMemoryDB');
+const getAll = type => {
   // TODO: mock implementation. should be replaced during task development
-  return [];
+  const returnValue = DB.getAllEntities(type);
+  return returnValue;
 };
 
-module.exports = { getAll };
+const getUserById = (type, id) => {
+  const returnValue = DB.getEntryById(type, id);
+  return returnValue;
+};
+
+const createNewUser = (type, name, login, password) => {
+  const newUserFromDB = DB.createEntry(type, name, login, password);
+  return newUserFromDB;
+};
+
+const updateUserById = (type, id, name, login, password) => {
+  const updateUserFromDB = DB.updateEntity(type, id, name, login, password);
+  return updateUserFromDB;
+};
+module.exports = { getAll, getUserById, createNewUser, updateUserById };
