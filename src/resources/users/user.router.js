@@ -36,4 +36,12 @@ router.route('/:id').put((req, res) => {
   // map user fields to exclude secret fields like "password"
   res.json(User.toResponse(updatedUser));
 });
+
+router.route('/:id').delete((req, res) => {
+  const { id } = req.params;
+  const deleteUser = usersService.deleteById('users', id);
+
+  // map user fields to exclude secret fields like "password"
+  res.json(User.toResponse(deleteUser));
+});
 module.exports = router;

@@ -33,6 +33,18 @@ const updateEntity = (type, id, name, login, password) => {
   return updatedUser;
 };
 
-const DB = { getAllEntities, getEntryById, createEntry, updateEntity };
+const deleteEntryById = (type, id) => {
+  const returnEntity = db[type].filter(item => item.id === id)[0];
+  db[type] = db[type].filter(i => i.id !== id);
+  return returnEntity;
+};
+
+const DB = {
+  getAllEntities,
+  getEntryById,
+  createEntry,
+  updateEntity,
+  deleteEntryById
+};
 
 module.exports = DB;

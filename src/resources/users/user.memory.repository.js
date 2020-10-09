@@ -19,4 +19,15 @@ const updateUserById = (type, id, name, login, password) => {
   const updateUserFromDB = DB.updateEntity(type, id, name, login, password);
   return updateUserFromDB;
 };
-module.exports = { getAll, getUserById, createNewUser, updateUserById };
+
+const deleteUserById = (type, id) => {
+  const deletedUser = DB.deleteEntryById(type, id);
+  return deletedUser;
+};
+module.exports = {
+  getAll,
+  getUserById,
+  createNewUser,
+  updateUserById,
+  deleteUserById
+};
