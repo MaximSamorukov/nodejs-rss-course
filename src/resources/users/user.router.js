@@ -12,7 +12,7 @@ router.route('/:id').get((req, res) => {
   const { id } = req.params;
   const users = usersService.getById('users', id);
   // map user fields to exclude secret fields like "password"
-  res.json(users.map(User.toResponse));
+  res.json(User.toResponse(users));
 });
 
 router.route('/').post((req, res) => {
