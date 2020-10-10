@@ -15,12 +15,13 @@ router.route('/:id').get((req, res) => {
 
 //  create
 router.route('/').post((req, res) => {
-  const { title, order, description, userId, columnId } = req.body;
+  const { title, order, description, userId, boardId, columnId } = req.body;
   const newTask = tasksService.createTask('tasks', {
     title,
     order,
     description,
     columnId,
+    boardId,
     userId
   });
   res.json(newTask);
@@ -29,13 +30,14 @@ router.route('/').post((req, res) => {
 // update
 router.route('/:id').put((req, res) => {
   const { id } = req.params;
-  const { title, order, description, userId, columnId } = req.body;
+  const { title, order, description, userId, boardId, columnId } = req.body;
   const updatedTask = tasksService.updateById('tasks', {
     id,
     title,
     order,
     description,
     userId,
+    boardId,
     columnId
   });
   res.json(updatedTask);

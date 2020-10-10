@@ -122,6 +122,7 @@ const updateEntityBoard = (type, id, title, columns) => {
 const deleteEntryByIdBoard = (type, id) => {
   const returnEntity = db[type].filter(item => item.id === id)[0];
   db[type] = db[type].filter(i => i.id !== id);
+  db.tasks = db.tasks.filter(i => i.boardId !== id);
   return returnEntity;
 };
 //  Boards end
@@ -159,6 +160,13 @@ const updateEntityUser = (type, id, name, login, password) => {
 const deleteEntryByIdUser = (type, id) => {
   const returnEntity = db[type].filter(item => item.id === id)[0];
   db[type] = db[type].filter(i => i.id !== id);
+  db.tasks = db.tasks.map(i => {
+    if (i.userId === id) {
+      i.userId = null;
+      return i;
+    }
+    return i;
+  });
   return returnEntity;
 };
 //  Users end
