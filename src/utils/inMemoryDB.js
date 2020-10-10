@@ -1,25 +1,148 @@
 const User = require('../resources/users/user.model');
-
+const Board = require('../resources/boards/board.model');
+const Column = require('../resources/columns/column.model');
+const Task = require('../resources/tasks/task.model');
 const db = {
-  users: []
+  users: [],
+  boards: [],
+  columns: [],
+  tasks: []
 };
 
-const getAllEntities = type => {
+// Tasks begin
+const getAllEntitiesTask = type => {
   return db[type];
 };
 
-const getEntryById = (type, id) => {
+const getEntryByIdTask = (type, id) => {
   const entityById = db[type].filter(i => i.id === id);
-  return entityById;
+  return entityById[0];
 };
 
-const createEntry = (type, name, login, password) => {
+const createEntryTask = (
+  type,
+  { title, order, description, userId, columnId }
+) => {
+  const newTask = new Task({ title, order, description, userId, columnId });
+  db[type].push(newTask);
+  return newTask;
+};
+
+const updateEntityTask = (
+  type,
+  { id, title, order, description, userId, columnId }
+) => {
+  db[type].map(item => {
+    if (item.id === id) {
+      item.title = title;
+      item.order = order;
+      item.description = description;
+      item.userId = userId;
+      item.columnId = columnId;
+      return item;
+    }
+    return item;
+  });
+  const updatedTask = db[type].filter(item => item.id === id)[0];
+  return updatedTask;
+};
+
+const deleteEntryByIdTask = (type, id) => {
+  const returnEntity = db[type].filter(item => item.id === id)[0];
+  db[type] = db[type].filter(i => i.id !== id);
+  return returnEntity;
+};
+//  Tasks end
+
+// Columns begin
+const getAllEntitiesColumn = type => {
+  return db[type];
+};
+
+const getEntryByIdColumn = (type, id) => {
+  const entityById = db[type].filter(i => i.id === id);
+  return entityById[0];
+};
+
+const createEntryColumn = (type, title, order) => {
+  const newColumn = new Column({ title, order });
+  db[type].push(newColumn);
+  return newColumn;
+};
+
+const updateEntityColumn = (type, id, title, order) => {
+  db[type].map(item => {
+    if (item.id === id) {
+      item.title = title;
+      item.order = order;
+      return item;
+    }
+    return item;
+  });
+  const updatedColumn = db[type].filter(item => item.id === id)[0];
+  return updatedColumn;
+};
+
+const deleteEntryByIdColumn = (type, id) => {
+  const returnEntity = db[type].filter(item => item.id === id)[0];
+  db[type] = db[type].filter(i => i.id !== id);
+  return returnEntity;
+};
+//  Columns end
+
+// Boards begin
+const getAllEntitiesBoard = type => {
+  return db[type];
+};
+
+const getEntryByIdBoard = (type, id) => {
+  const entityById = db[type].filter(i => i.id === id);
+  return entityById[0];
+};
+
+const createEntryBoard = (type, title, columns) => {
+  const newBoard = new Board({ title, columns });
+  db[type].push(newBoard);
+  return newBoard;
+};
+
+const updateEntityBoard = (type, id, title, columns) => {
+  db[type].map(item => {
+    if (item.id === id) {
+      item.title = title;
+      item.columns = columns;
+      return item;
+    }
+    return item;
+  });
+  const updatedBoard = db[type].filter(item => item.id === id)[0];
+  return updatedBoard;
+};
+
+const deleteEntryByIdBoard = (type, id) => {
+  const returnEntity = db[type].filter(item => item.id === id)[0];
+  db[type] = db[type].filter(i => i.id !== id);
+  return returnEntity;
+};
+//  Boards end
+
+// Users begin
+const getAllEntitiesUser = type => {
+  return db[type];
+};
+
+const getEntryByIdUser = (type, id) => {
+  const entityById = db[type].filter(i => i.id === id);
+  return entityById[0];
+};
+
+const createEntryUser = (type, name, login, password) => {
   const newUser = new User({ name, login, password });
   db[type].push(newUser);
   return newUser;
 };
 
-const updateEntity = (type, id, name, login, password) => {
+const updateEntityUser = (type, id, name, login, password) => {
   db[type].map(item => {
     if (item.id === id) {
       item.name = name;
@@ -33,18 +156,36 @@ const updateEntity = (type, id, name, login, password) => {
   return updatedUser;
 };
 
-const deleteEntryById = (type, id) => {
+const deleteEntryByIdUser = (type, id) => {
   const returnEntity = db[type].filter(item => item.id === id)[0];
   db[type] = db[type].filter(i => i.id !== id);
   return returnEntity;
 };
-
+//  Users end
 const DB = {
-  getAllEntities,
-  getEntryById,
-  createEntry,
-  updateEntity,
-  deleteEntryById
+  getAllEntitiesUser,
+  getEntryByIdUser,
+  createEntryUser,
+  updateEntityUser,
+  deleteEntryByIdUser,
+
+  getAllEntitiesBoard,
+  getEntryByIdBoard,
+  createEntryBoard,
+  updateEntityBoard,
+  deleteEntryByIdBoard,
+
+  getAllEntitiesColumn,
+  getEntryByIdColumn,
+  createEntryColumn,
+  updateEntityColumn,
+  deleteEntryByIdColumn,
+
+  getAllEntitiesTask,
+  getEntryByIdTask,
+  createEntryTask,
+  updateEntityTask,
+  deleteEntryByIdTask
 };
 
 module.exports = DB;

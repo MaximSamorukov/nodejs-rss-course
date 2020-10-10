@@ -1,0 +1,50 @@
+const router = require('express').Router();
+const tasksService = require('./task.service');
+//  get All
+router.route('/').get((req, res) => {
+  const tasks = tasksService.getAll('boards');
+  res.json(tasks);
+});
+
+//  get by id
+router.route('/:id').get((req, res) => {
+  const { id } = req.params;
+  const tasks = tasksService.getById('tasks', id);
+  res.json(tasks);
+});
+
+//  create
+router.route('/').post((req, res) => {
+  const { title, order, description, userId, columnId } = req.body;
+  const newTask = tasksService.createTask('tasks', {
+    title,
+    order,
+    description,
+    columnId,
+    userId
+  });
+  res.json(newTask);
+});
+
+// update
+router.route('/:id').put((req, res) => {
+  const { id } = req.params;
+  const { title, order, description, userId, columnId } = req.body;
+  const updatedTask = tasksService.updateById('tasks', {
+    id,
+    title,
+    order,
+    description,
+    userId,
+    columnId
+  });
+  res.json(updatedTask);
+});
+
+//  delete
+router.route('/:id').delete((req, res) => {
+  const { id } = req.params;
+  const deleteTask = tasksService.deleteById('tasks', id);
+  res.json(deleteTask);
+});
+module.exports = router;
