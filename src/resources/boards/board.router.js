@@ -31,7 +31,7 @@ router.route('/:id').put((req, res) => {
 //  delete
 router.route('/:id').delete((req, res) => {
   const { id } = req.params;
-  const deleteBoard = boardsService.deleteById('boards', id);
-  res.json(deleteBoard);
+  boardsService.deleteById('boards', id);
+  res.sendStatus(200);
 });
 module.exports = router;

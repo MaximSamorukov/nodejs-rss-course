@@ -46,7 +46,7 @@ router.route('/:id').put((req, res) => {
 //  delete
 router.route('/:id').delete((req, res) => {
   const { id } = req.params;
-  const deleteTask = tasksService.deleteById('tasks', id);
-  res.json(deleteTask);
+  tasksService.deleteById('tasks', id);
+  res.sendStatus(200);
 });
 module.exports = router;
