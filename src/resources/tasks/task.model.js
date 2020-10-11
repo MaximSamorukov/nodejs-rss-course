@@ -3,7 +3,7 @@ const uuid = require('uuid');
 class Task {
   constructor({
     title = 'title',
-    order = 'order',
+    order = 0,
     description = 'description',
     userId = '#userId',
     boardId = '#boardId',

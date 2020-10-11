@@ -1,6 +1,5 @@
 const DB = require('../../utils/inMemoryDB');
 const getAll = type => {
-  // TODO: mock implementation. should be replaced during task development
   const returnValue = DB.getAllEntitiesUser(type);
   return returnValue;
 };

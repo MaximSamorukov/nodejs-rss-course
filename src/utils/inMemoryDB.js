@@ -10,27 +10,36 @@ const db = {
 };
 
 // Tasks begin
-const getAllEntitiesTask = type => {
-  return db[type];
+
+const getEntryByIdTask = (type, boardId) => {
+  const entityById = db[type].filter(i => i.boardId === boardId);
+  return entityById;
 };
 
-const getEntryByIdTask = (type, id) => {
-  const entityById = db[type].filter(i => i.id === id);
-  return entityById[0];
+const getTaskFromDBByOwnId = (type, { id }) => {
+  const returnValue = db[type].filter(i => i.id === id);
+  return returnValue;
 };
-
 const createEntryTask = (
   type,
-  { title, order, description, userId, columnId }
+  { id, title, order, description, userId, columnId }
 ) => {
-  const newTask = new Task({ title, order, description, userId, columnId });
+  const boardId = id;
+  const newTask = new Task({
+    title,
+    order,
+    description,
+    userId,
+    boardId,
+    columnId
+  });
   db[type].push(newTask);
   return newTask;
 };
 
 const updateEntityTask = (
   type,
-  { id, title, order, description, userId, columnId }
+  { id, title, order, description, boardId, userId, columnId }
 ) => {
   db[type].map(item => {
     if (item.id === id) {
@@ -38,19 +47,21 @@ const updateEntityTask = (
       item.order = order;
       item.description = description;
       item.userId = userId;
+      item.boardId = boardId;
       item.columnId = columnId;
       return item;
     }
     return item;
   });
-  const updatedTask = db[type].filter(item => item.id === id)[0];
+  const updatedTask = db[type].filter(item => item.id === id);
   return updatedTask;
 };
 
-const deleteEntryByIdTask = (type, id) => {
-  const returnEntity = db[type].filter(item => item.id === id)[0];
+const deleteEntryByIdTask = (type, { id }) => {
+  const returnEntity = db[type].filter(item => item.id === id);
+  const value = returnEntity.length === 1 ? returnEntity : [];
   db[type] = db[type].filter(i => i.id !== id);
-  return returnEntity;
+  return value;
 };
 //  Tasks end
 
@@ -97,7 +108,7 @@ const getAllEntitiesBoard = type => {
 
 const getEntryByIdBoard = (type, id) => {
   const entityById = db[type].filter(i => i.id === id);
-  return entityById[0];
+  return entityById;
 };
 
 const createEntryBoard = (type, title, columns) => {
@@ -167,6 +178,7 @@ const deleteEntryByIdUser = (type, id) => {
     }
     return i;
   });
+
   return returnEntity;
 };
 //  Users end
@@ -189,11 +201,11 @@ const DB = {
   updateEntityColumn,
   deleteEntryByIdColumn,
 
-  getAllEntitiesTask,
   getEntryByIdTask,
   createEntryTask,
   updateEntityTask,
-  deleteEntryByIdTask
+  deleteEntryByIdTask,
+  getTaskFromDBByOwnId
 };
 
 module.exports = DB;

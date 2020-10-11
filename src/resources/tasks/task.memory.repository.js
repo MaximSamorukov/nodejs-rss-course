@@ -1,11 +1,11 @@
 const DB = require('../../utils/inMemoryDB');
-const getAll = type => {
-  const returnValue = DB.getAllEntitiesTask(type);
+const getAll = (type, id) => {
+  const returnValue = DB.getAllEntitiesTask(type, id);
   return returnValue;
 };
 
-const getTaskById = (type, id) => {
-  const returnValue = DB.getEntryByIdTask(type, id);
+const getTaskById = (type, boardId) => {
+  const returnValue = DB.getEntryByIdTask(type, boardId);
   return returnValue;
 };
 
@@ -19,14 +19,20 @@ const updateTaskById = (type, object) => {
   return updateTaskFromDB;
 };
 
-const deleteTaskById = (type, id) => {
-  const deletedColumn = DB.deleteEntryByIdTask(type, id);
-  return deletedColumn;
+const deleteTaskById = (type, object) => {
+  const deletedTask = DB.deleteEntryByIdTask(type, object);
+  return deletedTask;
+};
+
+const getTaskByOwnId = (type, object) => {
+  const task = DB.getTaskFromDBByOwnId(type, object);
+  return task;
 };
 module.exports = {
   getAll,
   getTaskById,
   createNewTask,
   updateTaskById,
-  deleteTaskById
+  deleteTaskById,
+  getTaskByOwnId
 };

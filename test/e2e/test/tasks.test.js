@@ -26,31 +26,26 @@ describe('Tasks suite', () => {
   let request = unauthorizedRequest;
   let testTaskId;
   let testBoardId;
-
   beforeAll(async () => {
     if (shouldAuthorizationBeTested) {
       request = await createAuthorizedRequest(unauthorizedRequest);
     }
-
     await request
       .post(routes.boards.create)
       .set('Accept', 'application/json')
       .send(TEST_BOARD_DATA)
       .then(res => (testBoardId = res.body.id));
-
     await request
       .post(routes.tasks.create(testBoardId))
       .set('Accept', 'application/json')
       .send(TEST_TASK_DATA)
       .then(res => (testTaskId = res.body.id));
   });
-
   afterAll(async () => {
     await request
       .delete(routes.boards.delete(testBoardId))
       .then(res => expect(res.status).oneOf([200, 204]));
   });
-
   describe('GET', () => {
     it('should get all tasks', async () => {
       await request
@@ -64,11 +59,9 @@ describe('Tasks suite', () => {
           jestExpect(res.body).not.toHaveLength(0);
         });
     });
-
     it('should get a task by id', async () => {
       // Setup
       let expectedTask;
-
       await request
         .get(routes.tasks.getAll(testBoardId))
         .expect(200)
@@ -77,7 +70,6 @@ describe('Tasks suite', () => {
           jestExpect(res.body).not.toHaveLength(0);
           expectedTask = res.body[0];
         });
-
       // Test
       await request
         .get(routes.tasks.getById(expectedTask.boardId, expectedTask.id))
@@ -89,11 +81,9 @@ describe('Tasks suite', () => {
         });
     });
   });
-
   describe('POST', () => {
     it('should create task successfully', async () => {
       let taskId;
-
       await request
         .post(routes.tasks.create(testBoardId))
         .set('Accept', 'application/json')
@@ -108,17 +98,14 @@ describe('Tasks suite', () => {
             boardId: testBoardId
           });
         });
-
       // Teardown
       await request.delete(routes.tasks.delete(testBoardId, taskId));
     });
   });
-
   describe('PUT', () => {
     it('should update task successfully', async () => {
       // Setup
       let addedTask;
-
       await request
         .post(routes.tasks.create(testBoardId))
         .set('Accept', 'application/json')
@@ -126,12 +113,10 @@ describe('Tasks suite', () => {
         .then(res => {
           addedTask = res.body;
         });
-
       const updatedTask = {
         ...addedTask,
         title: 'Autotest updated task'
       };
-
       // Test
       await request
         .put(routes.tasks.update(updatedTask.boardId, updatedTask.id))
@@ -139,7 +124,6 @@ describe('Tasks suite', () => {
         .send(updatedTask)
         .expect(200)
         .expect('Content-Type', /json/);
-
       await request
         .get(routes.tasks.getById(updatedTask.boardId, updatedTask.id))
         .set('Accept', 'application/json')
@@ -148,7 +132,6 @@ describe('Tasks suite', () => {
         .then(res => jestExpect(res.body).toMatchObject(updatedTask));
     });
   });
-
   describe('DELETE', () => {
     it('should delete task successfully', async () => {
       await request
@@ -157,7 +140,6 @@ describe('Tasks suite', () => {
       await request
         .delete(routes.tasks.delete(testBoardId, testTaskId))
         .then(res => expect(res.status).oneOf([200, 204]));
-
       await request
         .get(routes.tasks.getById(testBoardId, testTaskId))
         .expect(404);
