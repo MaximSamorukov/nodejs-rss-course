@@ -58,7 +58,7 @@ router.route('/:id/tasks').post((req, res) => {
     columnId,
     userId
   });
-  res.json(newTask);
+  res.status(200).send(newTask);
 });
 
 // task update
@@ -89,7 +89,7 @@ router.route('/:boardId/tasks/:id').delete((req, res) => {
 router.route('/:id').delete((req, res) => {
   const { id } = req.params;
   const returnValue = boardsService.deleteById('boards', id);
-  const status = returnValue.length === 0 ? 404 : 200;
+  const status = returnValue.length === 0 ? 404 : 204;
   res.sendStatus(status);
 });
 
