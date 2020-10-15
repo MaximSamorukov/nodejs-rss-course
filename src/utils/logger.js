@@ -1,4 +1,15 @@
-const logger = (req, res, next) => {
+const date = require('date-and-time');
+
+const errorLogger = (error, next, stream) => {
+  console.log("Somethis's wrong!!!");
+  const dateString = date.format(new Date(), 'Y-M-D-HH-mm-SS-SSS');
+  const message = `=> error: ${dateString}; "Somethis's wrong!!!" ${error.message}`;
+  console.log(message);
+  stream()(`${message}\n`);
+  next();
+};
+
+const logger = (req, res, next, stream) => {
   const parseFunction = object => {
     if (object === null) {
       return null;
@@ -27,10 +38,14 @@ const logger = (req, res, next) => {
   params = nullOrValue(params);
   body = nullOrValue(body);
   method = nullOrValue(method);
-  console.log(
-    `url:${url}; method:${method} query params:${params}; body:${body}`
-  );
+  const dateString = date.format(new Date(), 'Y-M-D-HH-mm-SS-SSS');
+  const message = `=> process: ${dateString}; url:${url}; method:${method} query params:${params}; body:${body}`;
+  console.log(message);
+  stream()(`${message}\n`);
   next();
 };
-
-module.exports = logger;
+const log = {
+  logger,
+  errorLogger
+};
+module.exports = log;
