@@ -56,13 +56,6 @@ process.on('uncaughtException', (error, origin) => {
     origin
   };
   console.error("Call us 1. We'll help!!", object.error);
-  // console.error(error.message);
-  // process.exit(0);
-  // if (error) {
-  //   console.log('Error');
-  // }
-  // process.exit(1);
-  // next();
   return;
 });
 
