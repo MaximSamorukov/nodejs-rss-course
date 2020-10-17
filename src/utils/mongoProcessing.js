@@ -1,9 +1,7 @@
-// const User = require('../resources/users/user.model');
+const User = require('../resources/users/user.model');
 const Board = require('../resources/boards/board.model');
 const Column = require('../resources/columns/column.model');
 const Task = require('../resources/tasks/task.model');
-const UserDB = require('../resources/users/user.model.db');
-
 const db = {
   users: [],
   boards: [],
@@ -141,20 +139,38 @@ const deleteEntryByIdBoard = (type, id) => {
 //  Boards end
 
 // Users begin
-const getAllEntitiesUser = () => UserDB.find({});
-
-const getEntryByIdUser = async (type, id) => UserDB.findOne({ id });
-
-const createEntryUser = (type, name, login, password) => {
-  const newUserDB = new UserDB({ name, login, password });
-  newUserDB.save();
-  return newUserDB;
+const getAllEntitiesUser = type => {
+  return db[type];
 };
 
-const updateEntityUser = (type, id, name, login, password) =>
-  UserDB.updateOne({ id }, { name, login, password });
+const getEntryByIdUser = (type, id) => {
+  const entityById = db[type].filter(i => i.id === id);
+  return entityById[0];
+};
 
-const deleteEntryByIdUser = async (type, id) => {
+const createEntryUser = (type, name, login, password) => {
+  const newUser = new User({ name, login, password });
+  db[type].push(newUser);
+  return newUser;
+};
+
+const updateEntityUser = (type, id, name, login, password) => {
+  db[type].map(item => {
+    if (item.id === id) {
+      item.name = name;
+      item.login = login;
+      item.password = password;
+      return item;
+    }
+    return item;
+  });
+  const updatedUser = db[type].filter(item => item.id === id)[0];
+  return updatedUser;
+};
+
+const deleteEntryByIdUser = (type, id) => {
+  const returnEntity = db[type].filter(item => item.id === id)[0];
+  db[type] = db[type].filter(i => i.id !== id);
   db.tasks = db.tasks.map(i => {
     if (i.userId === id) {
       i.userId = null;
@@ -162,12 +178,8 @@ const deleteEntryByIdUser = async (type, id) => {
     }
     return i;
   });
-  const userToDelete = await UserDB.findOne({ id });
-  const returnValueAfterDelete = await UserDB.deleteOne({ id });
-  if (returnValueAfterDelete.deletedCount === 0) {
-    throw new Error('We have problems with deletion, Huston!');
-  }
-  return userToDelete;
+
+  return returnEntity;
 };
 //  Users end
 const DB = {
