@@ -4,7 +4,6 @@ const path = require('path');
 const YAML = require('yamljs');
 const userRouter = require('./resources/users/user.router');
 const boardRouter = require('./resources/boards/board.router');
-const columnRouter = require('./resources/columns/column.router');
 const taskRouter = require('./resources/tasks/task.router');
 const loggerRouter = require('./utils/loggerRouter');
 const wrStream = require('./utils/stream');
@@ -30,7 +29,6 @@ app.use((req, res, next) => loggerRouter(false, req, res, next, wrStream));
 app.use('/users', userRouter);
 app.use('/boards', boardRouter);
 app.use('/tasks', taskRouter);
-app.use('/columns', columnRouter);
 
 app.use((err, req, res, next) => {
   loggerRouter(err, false, false, next, wrStream);
