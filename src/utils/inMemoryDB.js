@@ -155,8 +155,6 @@ const updateEntityUser = (type, id, name, login, password) =>
   UserDB.updateOne({ id }, { name, login, password });
 
 const deleteEntryByIdUser = async (type, id) => {
-  // const returnEntity = db[type].filter(item => item.id === id)[0];
-  // db[type] = db[type].filter(i => i.id !== id);
   db.tasks = db.tasks.map(i => {
     if (i.userId === id) {
       i.userId = null;

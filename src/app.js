@@ -23,48 +23,39 @@ app.use('/', (req, res, next) => {
   }
   next();
 });
-
+// app.use(() => {
+//   throw new Error('ups');
+// });
 app.use((req, res, next) => loggerRouter(false, req, res, next, wrStream));
 app.use('/users', userRouter);
 app.use('/boards', boardRouter);
 app.use('/tasks', taskRouter);
 app.use('/columns', columnRouter);
 
-// app.use((req, res, next) => {
-//   throw new Error('ups');
-//   next();
-// });
 app.use((err, req, res, next) => {
-  // const value = {
-  //   message: 'Internal Server Error',
-  //   err,
-  //   req,
-  //   res
-  // };
   loggerRouter(err, false, false, next, wrStream);
   res.status(500);
 });
 
-// app.use((req, res, next) => {
+// app.use(() => {
 //   throw new Error('ups');
-//   // next();
 // });
 
 process.on('uncaughtException', (error, origin) => {
-  const object = {
+  const err = {
     error,
     origin
   };
-  console.error("Call us 1. We'll help!!", object.error);
+  loggerRouter(err, false, false, false, wrStream);
   return;
 });
 
 process.on('unhandledRejection', (error, origin) => {
-  const object = {
+  const err = {
     error,
     origin
   };
-  console.error("Call us 2. We'll help!!", object.error);
+  loggerRouter(err, false, false, false, wrStream);
   return;
 });
 module.exports = app;

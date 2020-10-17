@@ -1,9 +1,9 @@
 const date = require('date-and-time');
 
 const errorLogger = (error, next, stream) => {
-  console.log("Somethis's wrong!!!");
+  // console.log("Somethis's wrong!!!");
   const dateString = date.format(new Date(), 'Y-M-D-HH-mm-SS-SSS');
-  const message = `=> error: ${dateString}; "Somethis's wrong!!!" ${error.message}`;
+  const message = `=> error: ${dateString}; "Somethis's wrong!!!" Error: ${error.message}`;
   console.log(message);
   stream()(`${message}\n`);
   next();
@@ -44,8 +44,18 @@ const logger = (req, res, next, stream) => {
   stream()(`${message}\n`);
   next();
 };
+
+const loggerFatalError = ({ error }, next, stream) => {
+  const dateString = date.format(new Date(), 'Y-M-D-HH-mm-SS-SSS');
+  const message = `=> error: ${dateString}; "Somethis's wrong!!!" Error: ${error}.`;
+  console.log(message);
+  stream()(`${message}\n`);
+  return;
+};
+
 const log = {
   logger,
-  errorLogger
+  errorLogger,
+  loggerFatalError
 };
 module.exports = log;

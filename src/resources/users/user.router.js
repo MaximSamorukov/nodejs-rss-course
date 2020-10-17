@@ -5,7 +5,6 @@ const usersService = require('./user.service');
 
 router.route('/').get(async (req, res) => {
   const users = await usersService.getAll('users');
-  // res.json(users.map(User.toResponse));
   res.json(users.map(UserDB.toResponse));
 });
 
