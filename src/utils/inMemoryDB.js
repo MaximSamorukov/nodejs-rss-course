@@ -1,33 +1,19 @@
-// const User = require('../resources/users/user.model');
-const Board = require('../resources/boards/board.model');
-const Column = require('../resources/columns/column.model');
-const Task = require('../resources/tasks/task.model');
 const UserDB = require('../resources/users/user.model.db');
-
-const db = {
-  users: [],
-  boards: [],
-  columns: [],
-  tasks: []
-};
+const BoardDB = require('../resources/boards/board.model.db');
+const TaskDB = require('../resources/tasks/task.model.db');
 
 // Tasks begin
 
-const getEntryByIdTask = (type, boardId) => {
-  const entityById = db[type].filter(i => i.boardId === boardId);
-  return entityById;
-};
+const getEntryByIdTask = (type, boardId) => TaskDB.find({ boardId });
 
-const getTaskFromDBByOwnId = (type, { id }) => {
-  const returnValue = db[type].filter(i => i.id === id);
-  return returnValue;
-};
+const getTaskFromDBByOwnId = (type, { id }) => TaskDB.find({ id });
+
 const createEntryTask = (
   type,
   { id, title, order, description, userId, columnId }
 ) => {
   const boardId = id;
-  const newTask = new Task({
+  const newTaskDB = new TaskDB({
     title,
     order,
     description,
@@ -35,108 +21,57 @@ const createEntryTask = (
     boardId,
     columnId
   });
-  db[type].push(newTask);
-  return newTask;
+  newTaskDB.save();
+  return newTaskDB;
 };
 
-const updateEntityTask = (
+const updateEntityTask = async (
   type,
   { id, title, order, description, boardId, userId, columnId }
 ) => {
-  db[type].map(item => {
-    if (item.id === id) {
-      item.title = title;
-      item.order = order;
-      item.description = description;
-      item.userId = userId;
-      item.boardId = boardId;
-      item.columnId = columnId;
-      return item;
-    }
-    return item;
-  });
-  const updatedTask = db[type].filter(item => item.id === id);
-  return updatedTask;
+  await TaskDB.updateOne(
+    { id },
+    { title, order, description, boardId, userId, columnId }
+  );
+  const taskToReturnAfterUpdate = await TaskDB.findOne({ id });
+  return taskToReturnAfterUpdate;
 };
 
-const deleteEntryByIdTask = (type, { id }) => {
-  const returnEntity = db[type].filter(item => item.id === id);
-  const value = returnEntity.length === 1 ? returnEntity : [];
-  db[type] = db[type].filter(i => i.id !== id);
-  return value;
+const deleteEntryByIdTask = async (type, { id }) => {
+  const taskToDelete = await TaskDB.find({ id });
+  const returnValueAfterDelete = await TaskDB.deleteOne({ id });
+  if (returnValueAfterDelete === 0) {
+    throw new Error('We have problems with deletion, Huston!');
+  }
+  return taskToDelete;
 };
 //  Tasks end
 
-// Columns begin
-const getAllEntitiesColumn = type => {
-  return db[type];
-};
-
-const getEntryByIdColumn = (type, id) => {
-  const entityById = db[type].filter(i => i.id === id);
-  return entityById[0];
-};
-
-const createEntryColumn = (type, title, order) => {
-  const newColumn = new Column({ title, order });
-  db[type].push(newColumn);
-  return newColumn;
-};
-
-const updateEntityColumn = (type, id, title, order) => {
-  db[type].map(item => {
-    if (item.id === id) {
-      item.title = title;
-      item.order = order;
-      return item;
-    }
-    return item;
-  });
-  const updatedColumn = db[type].filter(item => item.id === id)[0];
-  return updatedColumn;
-};
-
-const deleteEntryByIdColumn = (type, id) => {
-  const returnEntity = db[type].filter(item => item.id === id)[0];
-  db[type] = db[type].filter(i => i.id !== id);
-  return returnEntity;
-};
-//  Columns end
-
 // Boards begin
-const getAllEntitiesBoard = type => {
-  return db[type];
-};
+const getAllEntitiesBoard = () => BoardDB.find({});
 
-const getEntryByIdBoard = (type, id) => {
-  const entityById = db[type].filter(i => i.id === id);
-  return entityById;
-};
+const getEntryByIdBoard = async (type, id) => await BoardDB.findOne({ id });
 
 const createEntryBoard = (type, title, columns) => {
-  const newBoard = new Board({ title, columns });
-  db[type].push(newBoard);
-  return newBoard;
+  const newBoardDB = new BoardDB({ title, columns });
+  newBoardDB.save();
+  return newBoardDB;
 };
 
-const updateEntityBoard = (type, id, title, columns) => {
-  db[type].map(item => {
-    if (item.id === id) {
-      item.title = title;
-      item.columns = columns;
-      return item;
-    }
-    return item;
-  });
-  const updatedBoard = db[type].filter(item => item.id === id)[0];
-  return updatedBoard;
+const updateEntityBoard = async (type, id, title, columns) => {
+  const itemToReturn = await BoardDB.findOne({ id });
+  await BoardDB.updateOne({ id }, { title, columns });
+  return itemToReturn;
 };
 
-const deleteEntryByIdBoard = (type, id) => {
-  const returnEntity = db[type].filter(item => item.id === id)[0];
-  db[type] = db[type].filter(i => i.id !== id);
-  db.tasks = db.tasks.filter(i => i.boardId !== id);
-  return returnEntity;
+const deleteEntryByIdBoard = async (type, id) => {
+  await TaskDB.deleteMany({ boardId: id });
+  const boardToDelete = await BoardDB.find({ id });
+  const returnValueAfterDelete = await BoardDB.deleteOne({ id });
+  if (returnValueAfterDelete === 0) {
+    throw new Error('We have problems with deletion, Huston!');
+  }
+  return boardToDelete;
 };
 //  Boards end
 
@@ -155,13 +90,7 @@ const updateEntityUser = (type, id, name, login, password) =>
   UserDB.updateOne({ id }, { name, login, password });
 
 const deleteEntryByIdUser = async (type, id) => {
-  db.tasks = db.tasks.map(i => {
-    if (i.userId === id) {
-      i.userId = null;
-      return i;
-    }
-    return i;
-  });
+  await TaskDB.updateMany({ userId: id }, { userId: null });
   const userToDelete = await UserDB.findOne({ id });
   const returnValueAfterDelete = await UserDB.deleteOne({ id });
   if (returnValueAfterDelete.deletedCount === 0) {
@@ -182,12 +111,6 @@ const DB = {
   createEntryBoard,
   updateEntityBoard,
   deleteEntryByIdBoard,
-
-  getAllEntitiesColumn,
-  getEntryByIdColumn,
-  createEntryColumn,
-  updateEntityColumn,
-  deleteEntryByIdColumn,
 
   getEntryByIdTask,
   createEntryTask,
