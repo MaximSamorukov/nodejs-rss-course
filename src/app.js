@@ -4,8 +4,9 @@ const path = require('path');
 const YAML = require('yamljs');
 const userRouter = require('./resources/users/user.router');
 const boardRouter = require('./resources/boards/board.router');
-const columnRouter = require('./resources/columns/column.router');
 const taskRouter = require('./resources/tasks/task.router');
+const loggerRouter = require('./utils/loggerRouter');
+const wrStream = require('./utils/stream');
 
 const app = express();
 const swaggerDocument = YAML.load(path.join(__dirname, '../doc/api.yaml'));
@@ -21,10 +22,38 @@ app.use('/', (req, res, next) => {
   }
   next();
 });
-
+// app.use(() => {
+//   throw new Error('ups');
+// });
+app.use((req, res, next) => loggerRouter(false, req, res, next, wrStream));
 app.use('/users', userRouter);
 app.use('/boards', boardRouter);
 app.use('/tasks', taskRouter);
-app.use('/columns', columnRouter);
 
+app.use((err, req, res, next) => {
+  loggerRouter(err, false, false, next, wrStream);
+  res.status(500);
+});
+
+// app.use(() => {
+//   throw new Error('ups');
+// });
+
+process.on('uncaughtException', (error, origin) => {
+  const err = {
+    error,
+    origin
+  };
+  loggerRouter(err, false, false, false, wrStream);
+  return;
+});
+
+process.on('unhandledRejection', (error, origin) => {
+  const err = {
+    error,
+    origin
+  };
+  loggerRouter(err, false, false, false, wrStream);
+  return;
+});
 module.exports = app;

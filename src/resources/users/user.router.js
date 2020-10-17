@@ -1,28 +1,29 @@
 const router = require('express').Router();
 const User = require('./user.model');
+const UserDB = require('./user.model.db');
 const usersService = require('./user.service');
 
-router.route('/').get((req, res) => {
-  const users = usersService.getAll('users');
-  res.json(users.map(User.toResponse));
+router.route('/').get(async (req, res) => {
+  const users = await usersService.getAll('users');
+  res.json(users.map(UserDB.toResponse));
 });
 
-router.route('/:id').get((req, res) => {
+router.route('/:id').get(async (req, res) => {
   const { id } = req.params;
-  const users = usersService.getById('users', id);
-  res.json(User.toResponse(users));
+  const users = await usersService.getById('users', id);
+  res.json(UserDB.toResponse(users));
 });
 
-router.route('/').post((req, res) => {
+router.route('/').post(async (req, res) => {
   const { name, login, password } = req.body;
-  const newUser = usersService.createUser('users', name, login, password);
-  res.json(User.toResponse(newUser));
+  const newUser = await usersService.createUser('users', name, login, password);
+  res.json(UserDB.toResponse(newUser));
 });
 
-router.route('/:id').put((req, res) => {
+router.route('/:id').put(async (req, res) => {
   const { id } = req.params;
   const { name, login, password } = req.body;
-  const updatedUser = usersService.updateById(
+  const updatedUser = await usersService.updateById(
     'users',
     id,
     name,
@@ -33,10 +34,10 @@ router.route('/:id').put((req, res) => {
   res.json(User.toResponse(updatedUser));
 });
 
-router.route('/:id').delete((req, res) => {
+router.route('/:id').delete(async (req, res) => {
   const { id } = req.params;
-  const deleteUser = usersService.deleteById('users', id);
-  res.json(User.toResponse(deleteUser));
+  const deleteUser = await usersService.deleteById('users', id);
+  res.json(UserDB.toResponse(deleteUser));
 });
 
 module.exports = router;
