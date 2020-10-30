@@ -2,6 +2,7 @@ const router = require('express').Router();
 const User = require('./user.model');
 const UserDB = require('./user.model.db');
 const usersService = require('./user.service');
+const { crypt } = require('../../utils/bcrypt');
 
 router.route('/').get(async (req, res) => {
   const users = await usersService.getAll('users');
@@ -16,7 +17,8 @@ router.route('/:id').get(async (req, res) => {
 
 router.route('/').post(async (req, res) => {
   const { name, login, password } = req.body;
-  const newUser = await usersService.createUser('users', name, login, password);
+  const hash = await crypt(password);
+  const newUser = await usersService.createUser('users', name, login, hash);
   res.json(UserDB.toResponse(newUser));
 });
 
