@@ -23,10 +23,17 @@ const deleteUserById = (type, id) => {
   const deletedUser = DB.deleteEntryByIdUser(type, id);
   return deletedUser;
 };
+
+const getUserByLogin = async (type, login, password) => {
+  const user = await DB.getEntityByLogin(type, login, password);
+  return user;
+};
+
 module.exports = {
   getAll,
   getUserById,
   createNewUser,
   updateUserById,
-  deleteUserById
+  deleteUserById,
+  getUserByLogin
 };

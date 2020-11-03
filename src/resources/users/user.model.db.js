@@ -13,8 +13,8 @@ const userSchema = new Schema({
 });
 
 userSchema.statics.toResponse = user => {
-  const { id, name, login } = user;
-  return { id, name, login };
+  const { id, name, login, password } = user;
+  return { id, name, login, password };
 };
 
 const UserDB = model('User', userSchema);
