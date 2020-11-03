@@ -8,7 +8,6 @@ const taskRouter = require('./resources/tasks/task.router');
 const loginRouter = require('./resources/login/login.router');
 const loggerRouter = require('./utils/loggerRouter');
 const wrStream = require('./utils/stream');
-// const router = require('./resources/users/user.router');
 const checkToken = require('./resources/login/checkToken');
 const app = express();
 const swaggerDocument = YAML.load(path.join(__dirname, '../doc/api.yaml'));
@@ -39,9 +38,9 @@ app.use((err, req, res, next) => {
   res.sendStatus(500);
 });
 
-app.use(() => {
-  throw new Error('ups');
-});
+// app.use(() => {
+//   throw new Error('ups');
+// });
 
 process.on('uncaughtException', (error, origin) => {
   const err = {

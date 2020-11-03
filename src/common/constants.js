@@ -1,5 +1,5 @@
 const SALTROUNDS = 10;
-const SECRET = 'Klingon';
+const SECRET = 'secret-key';
 
 module.exports = {
   SALTROUNDS,

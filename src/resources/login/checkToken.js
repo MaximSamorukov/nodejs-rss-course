@@ -1,21 +1,25 @@
 const jwt = require('jsonwebtoken');
-const { SECRET } = require('../../common/constants');
+// const { SECRET } = require('../../common/constants');
+const { JWT_SECRET_KEY } = require('../../common/config');
 
 const checkToken = (req, res, next) => {
   const authHeader = req.header('Authorization');
 
   if (authHeader !== undefined) {
-    // const tokenString = req.header('Authorization');
     const [type, token] = authHeader.split(' ');
     if (type !== 'Bearer') {
-      res.status(401).send('Unauthorized user1!');
+      res.status(401).send('Unauthorized user!');
     } else {
-      const result = jwt.verify(token, SECRET);
-      console.log(result);
-      return next();
+      try {
+        const result = jwt.verify(token, JWT_SECRET_KEY);
+        console.log(result);
+        return next();
+      } catch (err) {
+        res.status(401).send('Unauthorized user!');
+      }
     }
+  } else {
+    res.status(401).send('Unauthorized user!');
   }
-  res.status(401).send('Unauthorized user2!');
 };
-
 module.exports = checkToken;
