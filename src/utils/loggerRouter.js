@@ -1,7 +1,7 @@
 const log = require('./logger');
 const { logger, errorLogger, loggerFatalError } = log;
 
-const loggerRouter = async (err, req, res, next, stream) => {
+const loggerRouter = (err, req, res, next, stream) => {
   if (Object.keys(err).toString() === 'error,origin') {
     loggerFatalError(err, next, stream);
     return;

@@ -8,4 +8,10 @@ const updateById = (type, id, name, login, password) =>
   usersRepo.updateUserById(type, id, name, login, password);
 const deleteById = (type, id) => usersRepo.deleteUserById(type, id);
 
-module.exports = { getAll, getById, createUser, updateById, deleteById };
+module.exports = {
+  getAll,
+  getById,
+  createUser,
+  updateById,
+  deleteById
+};

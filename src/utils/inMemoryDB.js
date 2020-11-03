@@ -98,6 +98,9 @@ const deleteEntryByIdUser = async (type, id) => {
   }
   return userToDelete;
 };
+
+const getEntityByLogin = async (type, login) => UserDB.findOne({ login });
+
 //  Users end
 const DB = {
   getAllEntitiesUser,
@@ -105,6 +108,7 @@ const DB = {
   createEntryUser,
   updateEntityUser,
   deleteEntryByIdUser,
+  getEntityByLogin,
 
   getAllEntitiesBoard,
   getEntryByIdBoard,
